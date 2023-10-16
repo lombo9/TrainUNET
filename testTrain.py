@@ -6,8 +6,8 @@ from testModel import UNETImproved  # Assuming your model is named like this
 from testDataset import get_isic_dataloader
 
 # Parameters
-num_epochs = 10  # Number of epochs
-batch_size = 32  # Batch size
+num_epochs = 1  # Number of epochs
+batch_size = 128  # Batch size
 lr = 0.001  # Learning rate
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")  # Device
 
