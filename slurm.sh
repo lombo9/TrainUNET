@@ -12,4 +12,4 @@
 
 
 source /home/Student/s4585713/anaconda/bin/activate /home/Student/s4585713
-python trainTest.py
+python testTrain.py
