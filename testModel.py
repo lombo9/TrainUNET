@@ -56,17 +56,20 @@ class UNETImproved(nn.Module):
         self.decode3 = LocalizationModule(128 + 64, 64)
         self.decode4 = LocalizationModule(64 + 32, 32)
 
-        # # Output
+        # Output
         self.final_conv = nn.Conv2d(16, 1, kernel_size=1)
 
     def forward(self, x):
 
         # Encode
         e1 = self.encode1(x)
+        print(f"Shape after encode1: {e1.shape}")
         e2 = self.encode2(F.max_pool2d(e1, 2))
         e3 = self.encode3(F.max_pool2d(e2, 2))
         e4 = self.encode4(F.max_pool2d(e3, 2))
         e5 = self.encode5(F.max_pool2d(e4, 2))
+        print(f"Shape after encode5: {e5.shape}")
+
 
         # Decode
         d1 = F.interpolate(e5, scale_factor=2, mode='nearest')
@@ -84,9 +87,11 @@ class UNETImproved(nn.Module):
         d4 = F.interpolate(d3, scale_factor=2, mode='nearest')
         d4 = torch.cat([d4, e1], dim=1)
         d4 = self.decode4(d4)
+        print(f"Shape before final conv: {d4.shape}")
 
         # Output
         out = self.final_conv(d4)
+        print(f"Shape of output: {out.shape}")
         return torch.sigmoid(out)
     
 
