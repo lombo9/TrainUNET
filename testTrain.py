@@ -12,7 +12,8 @@ lr = 0.001  # Learning rate
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")  # Device
 
 # Load Data
-root_dir = r'C:\Users\lombo\Desktop\3710_report\ISIC-2017_Training_Data\ISIC-2017_Training_Data'
+#root_dir = r'C:\Users\lombo\Desktop\3710_report\ISIC-2017_Training_Data\ISIC-2017_Training_Data'
+root_dir = "/home/Student/s4585713/TrainUNET/ISIC-2017_Training_Data/ISIC-2017_Training_Data"
 full_loader = get_isic_dataloader(root_dir, batch_size=batch_size)
 train_size = int(0.8 * len(full_loader.dataset))  
 val_size = len(full_loader.dataset) - train_size  
