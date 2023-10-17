@@ -36,6 +36,7 @@ for epoch in range(num_epochs):
             model.train()
             print(f"\n---- Training ----")
             
+            train_loss = 0.0
             for i, (inputs, labels) in enumerate(train_loader):
                 inputs, labels = inputs.to(device), labels.to(device)
                 optimizer.zero_grad()
@@ -45,7 +46,10 @@ for epoch in range(num_epochs):
                 loss.backward()
                 optimizer.step()
                 
+                train_loss += loss.item()  
                 print(f"Batch {i}/{len(train_loader)}", end="\r")
+                
+            print(f"\n\t Average Training Loss: {train_loss/len(train_loader)}")  
                 
         elif phase == 'val':
             model.eval()
