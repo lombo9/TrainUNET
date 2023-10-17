@@ -1,12 +1,10 @@
 import torch
 import torch.optim as optim
 from torch.utils.data import random_split
-import torch.nn.functional as F
 from testModel import UNETImproved
 from testDataset import get_isic_dataloader
 from torchvision.utils import save_image
 import os
-import matplotlib.pyplot as plt
 
 output_dir = "/home/Student/s4585713/TrainUNET"
 os.makedirs(output_dir, exist_ok=True)
@@ -40,8 +38,6 @@ train_dice_history = []
 val_loss_history = []
 val_dice_history = []
 
-N = 10
-
 train_dice_total = 0.0
 val_dice_total = 0.0
 for epoch in range(num_epochs):
@@ -70,7 +66,6 @@ for epoch in range(num_epochs):
             print(f"\n\t Average Training Loss: {train_loss / len(train_loader)}")
             print(f"\n\t Average Training Dice Coefficient: {train_dice_total / len(train_loader)}")
 
-            # Append to history for plotting later
             train_loss_history.append(train_loss / len(train_loader))
             train_dice_history.append(train_dice_total / len(train_loader))
 
@@ -90,14 +85,11 @@ for epoch in range(num_epochs):
                     loss = criterion(outputs, labels)
                     val_loss += loss.item()
 
-                    train_loss += loss.item()
-
                     print(f"Batch {i}/{len(val_loader)}", end="\r")
 
             print(f"\n\t Average Validation Loss: {val_loss / len(val_loader)}")
             print(f"\n\t Average Validation Dice Coefficient: {val_dice_total / len(val_loader)}")
 
-            
             val_loss_history.append(val_loss / len(val_loader))
             val_dice_history.append(val_dice_total / len(val_loader))
 
@@ -113,16 +105,7 @@ for epoch in range(num_epochs):
                     save_image(inputs[0].cpu(), os.path.join(output_dir, f"sample_input_{epoch}_{i}.png"))
 
 
-plt.figure(figsize=(12, 4))
-
-plt.subplot(1, 2, 1)
-plt.plot(train_loss_history, label='Train Loss')
-plt.plot(val_loss_history, label='Validation Loss')
-plt.xlabel('Epochs')
-plt.ylabel('Loss')
-plt.title('Loss over epochs')
-plt.legend()
-
-plt.subplot(1, 2, 2)
-plt.plot(train_dice_history, label='Train Dice Coefficient')
-plt.plot(val_dice_history, label='Validation Dice Coefficient')
+print("\nTrain Loss History:", train_loss_history)
+print("\nTrain Dice Coefficient History:", train_dice_history)
+print("\nValidation Loss History:", val_loss_history)
+print("\nValidation Dice Coefficient History:", val_dice_history)
