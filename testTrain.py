@@ -25,9 +25,21 @@ model = UNETImproved(n_classes=2).to(device)
 criterion = torch.nn.BCELoss()
 optimizer = optim.Adam(model.parameters(), lr=lr)
 
+def dice_coefficient(prediction, target):
+    #smooth = 1
+    num = prediction.size(0)
+    x = prediction.view(num, -1).float()
+    y = target.view(num,-1).float()
+    intersect = (x*y).sum().float()
+    return (2 * intersect) / (x.sum() + y.sum())
+
+
+
 # Training Loop
 N = 10  # Print every N batches
 
+train_dice_total = 0.0
+val_dice_total = 0.0
 for epoch in range(num_epochs):
     print(f"\n==== Epoch {epoch} ====")
     
@@ -42,6 +54,8 @@ for epoch in range(num_epochs):
                 optimizer.zero_grad()
                 outputs = model(inputs)
                 
+                dice_val = dice_coefficient(outputs, labels)
+                train_dice_total += dice_val.item()
                 loss = criterion(outputs, labels)
                 loss.backward()
                 optimizer.step()
@@ -50,6 +64,7 @@ for epoch in range(num_epochs):
                 print(f"Batch {i}/{len(train_loader)}", end="\r")
                 
             print(f"\n\t Average Training Loss: {train_loss/len(train_loader)}")  
+            print(f"\n\t Average Training Dice Coefficient: {train_dice_total/len(train_loader)}") 
                 
         elif phase == 'val':
             model.eval()
@@ -60,9 +75,16 @@ for epoch in range(num_epochs):
                 for i, (inputs, labels) in enumerate(val_loader):
                     inputs, labels = inputs.to(device), labels.to(device)
                     outputs = model(inputs)
+
+                    dice_val = dice_coefficient(outputs, labels)
+                    val_dice_total += dice_val.item()
+
                     loss = criterion(outputs, labels)
                     val_loss += loss.item()
+
+                    train_loss  += loss.item()
                     
                     print(f"Batch {i}/{len(val_loader)}", end="\r")
 
             print(f"\n\t Average Validation Loss: {val_loss/len(val_loader)}")
+            print(f"\n\t Average Training Dice Coefficient: {train_dice_total/len(train_loader)}") 
