@@ -4,6 +4,11 @@ from torch.utils.data import random_split
 import torch.nn.functional as F
 from testModel import UNETImproved  # Assuming your model is named like this
 from testDataset import get_isic_dataloader
+from torchvision.utils import save_image
+import os
+
+output_dir = "/home/Student/s4585713/TrainUNET"  # directory to save the samples
+os.makedirs(output_dir, exist_ok=True)  # ensure the directory exists
 
 # Parameters
 num_epochs = 1  # Number of epochs
@@ -88,3 +93,16 @@ for epoch in range(num_epochs):
 
             print(f"\n\t Average Validation Loss: {val_loss/len(val_loader)}")
             print(f"\n\t Average Training Dice Coefficient: {train_dice_total/len(train_loader)}") 
+
+            samples = 3
+            with torch.no_grad():
+                for i, (inputs, labels) in enumerate(val_loader):
+                    if i == samples:
+                        break
+                inputs, labels = inputs.to(device), labels.to(device)
+                outputs = model(inputs)
+                save_image(outputs[0].cpu(), os.path.join(output_dir, f"sample_output_{epoch}_{i}.png"))
+                save_image(labels[0].cpu(), os.path.join(output_dir, f"sample_label_{epoch}_{i}.png"))
+                save_image(inputs[0].cpu(), os.path.join(output_dir, f"sample_input_{epoch}_{i}.png"))
+
+                
