@@ -9,7 +9,7 @@ import os
 output_dir = "/home/Student/s4585713/TrainUNET"
 os.makedirs(output_dir, exist_ok=True)
 
-num_epochs = 1
+num_epochs = 3
 batch_size = 128
 lr = 0.001
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
