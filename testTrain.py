@@ -9,7 +9,7 @@ import os
 output_dir = "/home/Student/s4585713/TrainUNET"
 os.makedirs(output_dir, exist_ok=True)
 
-num_epochs = 30
+num_epochs = 2
 batch_size = 128
 lr = 0.001
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -93,13 +93,17 @@ for epoch in range(num_epochs):
             val_loss_history.append(val_loss / len(val_loader))
             val_dice_history.append(val_dice_total / len(val_loader))
 
-            samples = 3
+            samples = 1
             with torch.no_grad():
                 for i, (inputs, labels) in enumerate(val_loader):
                     if i == samples:
                         break
                     inputs, labels = inputs.to(device), labels.to(device)
                     outputs = model(inputs)
+
+                    outputs = torch.sigmoid(outputs)
+                    outputs = (outputs > 0.5).float()
+
                     save_image(outputs[0].cpu(), os.path.join(output_dir, f"sample_output_{epoch}_{i}.png"))
                     save_image(labels[0].cpu(), os.path.join(output_dir, f"sample_label_{epoch}_{i}.png"))
                     save_image(inputs[0].cpu(), os.path.join(output_dir, f"sample_input_{epoch}_{i}.png"))

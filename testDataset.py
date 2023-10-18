@@ -3,6 +3,7 @@ import torch
 from torch.utils.data import Dataset, DataLoader
 from torchvision import transforms
 from PIL import Image
+import numpy as np
 
 
 
@@ -21,6 +22,10 @@ class ISICDataset(Dataset):
         
         image = Image.open(img_name)
         mask = Image.open(mask_name).convert('L')  
+
+        mask_tensor = transforms.ToTensor()(mask)
+        mask_bin = (mask_tensor > 0.5).float()
+        mask = transforms.toPILImage()(mask_bin)
 
         if self.transform:
             image = self.transform(image)
