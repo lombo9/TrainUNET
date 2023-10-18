@@ -25,7 +25,7 @@ class ISICDataset(Dataset):
 
         mask_tensor = transforms.ToTensor()(mask)
         mask_bin = (mask_tensor > 0.5).float()
-        mask = transforms.toPILImage()(mask_bin)
+        mask = transforms.ToPILImage()(mask_bin)
 
         if self.transform:
             image = self.transform(image)
