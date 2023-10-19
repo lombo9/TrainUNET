@@ -19,7 +19,7 @@ class ISICDataset(Dataset):
         
     def __getitem__(self, idx):
         img_name = os.path.join(self.image_dir, self.image_files[idx])
-        mask_name = os.path.join(self.mask_dir, self.image_files[idx].replace('.png', '_segmentation.png'))
+        mask_name = os.path.join(self.mask_dir, self.image_files[idx].replace('.jpg', '_segmentation.png'))
         
         image = Image.open(img_name)
         mask = Image.open(mask_name)  
