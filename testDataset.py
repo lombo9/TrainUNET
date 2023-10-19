@@ -24,11 +24,11 @@ class ISICDataset(Dataset):
         mask = Image.open(mask_name).convert('L')  
 
         mask_tensor = transforms.ToTensor()(mask)
-        mask_bin = (mask_tensor > 0.5).float()
+        mask_bin = (mask_tensor > 0.3).float()
         mask = transforms.ToPILImage()(mask_bin)
 
         if self.transform:
-            image = self.transform(image)
+            image = self.transform(image) 
             mask = self.transform(mask)
         return image, mask
 
