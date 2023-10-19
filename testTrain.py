@@ -9,13 +9,15 @@ import os
 output_dir = "/home/Student/s4585713/TrainUNET"
 os.makedirs(output_dir, exist_ok=True)
 
-num_epochs = 2
+num_epochs = 10
 batch_size = 128
 lr = 0.001
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-root_dir = "/home/Student/s4585713/TrainUNET/ISIC-2017_Training_Data/ISIC-2017_Training_Data"
-full_loader = get_isic_dataloader(root_dir, batch_size=batch_size)
+image_dir = "/home/Student/s4585713/TrainUNET/ISIC2018_Task1-2_Test_Input/ISIC2018_Task1-2_Test_Input"
+mask_dir = "/home/Student/s4585713/TrainUNET/ISIC2018_Task1_Test_GroundTruth"
+
+full_loader = get_isic_dataloader(image_dir, mask_dir, batch_size=batch_size)
 train_size = int(0.8 * len(full_loader.dataset))
 val_size = len(full_loader.dataset) - train_size
 train_dataset, val_dataset = random_split(full_loader.dataset, [train_size, val_size])
@@ -93,7 +95,7 @@ for epoch in range(num_epochs):
             val_loss_history.append(val_loss / len(val_loader))
             val_dice_history.append(val_dice_total / len(val_loader))
 
-            samples = 1
+            samples = 3
             with torch.no_grad():
                 for i, (inputs, labels) in enumerate(val_loader):
                     if i == samples:
